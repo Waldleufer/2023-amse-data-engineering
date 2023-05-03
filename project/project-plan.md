@@ -125,12 +125,12 @@ The Bicycle-Data-Initiative has an interactive tool which offers the following f
 (Source: City of Constance, Office for Urban Planning and Environment)
 </details>
 
-## Work Packages
+## [Work Packages → #1][Work Packages]
 
 <!-- List of work packages ordered sequentially, each pointing to an issue with more details. -->
 
-In order to fully utilize the automated Linking that GitHub provides the coarse-grained list of work packages is proveded in the first issue of this Project and will constantly be updated there.
+In order to fully utilize the automated Linking that GitHub provides the coarse-grained list of work packages is proveded in the [first issue][Work Packages] of this Project and will constantly be updated there.
 
-## [Work Packages → #1][Work Packages]
+
 
 [Work Packages]: https://github.com/Waldleufer/2023-amse-data-engineering/issues/1
