@@ -18,6 +18,26 @@ The analysis will correlate the measured amount of bike users in Konstanz with t
 * Metadata URL: https://mobilithek.info/offers/-6759756997530398389
 * Data URL: [todo]
 * Data Type: CSV
+<details>
+  <summary> Data Details </summary>
+
+  
+<p><strong>Die Koordinaten der Zollstellen:</strong></p>
+<ul>
+<li>Emmishofer Zoll: UMT = 512'684, 5'278'078; lat/lon = 47°39′21.517″N 9°10′08.096″E</li>
+<li>GZA Kreuzlingen/Tägerwilen: UMT = 513'022, 5'277'985; lat/lon = 47°39′18.458″N 9°10′24.273″E</li>
+<li>Tägerwilen-Paradieser Tor: UMT = 511'992, 5'278'865; lat/lon = 47°39′47.045″N 9°09′34.995″E </li>
+</ul>
+<p><strong>Spaltenerklärung:</strong></p>
+<ul>
+<li>EmZD = Anzahl der Kraftfahrzeuge nach Deutschland am Emmishofer Zoll</li>
+<li>EmZCH = Anzahl der Kraftfahrzeuge in die Schweiz am Emmishofer Zoll</li>
+<li>GZAD = Anzahl der Kraftfahrzeuge nach Deutschland an der Gemeinschaftszollanlage Kreuzlingen/Tägerwilen</li>
+<li>GZACH = Anzahl der Kraftfahrzeuge in die Schweiz an der Gemeinschaftszollanlage Kreuzlingen/Tägerwilen</li>
+<li>TPZD = Anzahl der Kraftfahrzeuge nach Deutschland an der Zollstelle Tägerwilen-Paradieser Tor</li>
+<li>TPZCH= Anzahl der Kraftfahrzeuge in die Schweiz an der Zollstelle Tägerwilen-Paradieser Tor </li>
+</ul>
+</details>
 
 <details>
 <summary>The Swiss cantonal authority of Thurgau and the Swiss Federal Roads Office (ASTRA) collect the average daily traffic volume (DTV) of motor vehicles crossing the border at the three customs posts "Tägerwilen-Paradieser Tor", "Emmishofer Zoll" and the "Gemeinschaftszollanlage Kreuzlingen/Tägerwilen (GZA for short)".
