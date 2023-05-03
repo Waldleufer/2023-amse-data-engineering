@@ -3,12 +3,12 @@
 ## Summary
 
 <!-- Describe your data science project in max. 5 sentences. -->
-This projects analyzes XY.
+This projects analyzes the hourly correlation between amount of measured bikers at a stationary counter in Constance, the measured weather at the given counter and the hourly border crossings. Is there less border crossings on sunny days? Is there less border crossings on days where many bikers ar on the roads in Constance? Or is there no meaningful correlation at all?
 
 ## Rationale
 
 <!-- Outline the impact of the analysis, e.g. which pains it solves. -->
-The analysis will correlate the measured amount of bike users in Konstanz with the weather at the given date and the pkw boarder crossings between Germany and Swiss at the same given date over the course of one year (tbt, possibly not 2021 bc of a technical defect in one of the counters), to find out if there are any meaningful correlations.
+The analysis will correlate the measured amount of bike users in Constance with the weather at the given date and the pkw boarder crossings between Germany and Swiss at the same given date over the course of one year, to find out if there are any meaningful correlations. As the three measured border crossings do all lead through Constance this should give a good idea about the amount of vehicles on the road. The hourly counting of vehicles since 2020 at these border crossings will improve the precision of the generated result.
 
 ## Datasources
 
@@ -16,7 +16,11 @@ The analysis will correlate the measured amount of bike users in Konstanz with t
 
 ### Datasource1: Border crossings motor vehicles Germany and Switzerland
 * Metadata URL: https://mobilithek.info/offers/-6759756997530398389
-* Data URL: [todo]
+* Data URLs: 
+  - https://offenedaten-konstanz.de/sites/default/files/GZ_Grenzverkehr_Jul.%202020-Dez.2021.csv
+  - https://offenedaten-konstanz.de/sites/default/files/TPZ_Grenzverkehr_Juli%202020-M%C3%A4rz%202022.csv
+  - https://offenedaten-konstanz.de/sites/default/files/EmZ_Grenzverkehr_Juli%202020-M%C3%A4rz%202022.csv
+  - https://offenedaten-konstanz.de/sites/default/files/DTV-Grenzverkehr%20KN-Kreuzlingen%202013-2020_0.csv
 * Data Type: CSV
 <details>
   <summary> Data Details </summary>
@@ -55,10 +59,50 @@ Note: The city of Constance explicitly did not collect the data.
 </details>
 
 
-### Datasource2: ExampleSource
+### Datasource2: Bicycle permanent counting stations Constance
 * Metadata URL: https://mobilithek.info/offers/-7161835583190029268
-* Data URL: [todo]
+* Data URLs: 
+  - https://offenedaten-konstanz.de/sites/default/files/Zaehlstelle_Herose_2018_stuendlich_Wetter.csv
+  - https://offenedaten-konstanz.de/sites/default/files/Zaehlstelle_Herose_2019_stuendlich_Wetter.csv
+  - https://offenedaten-konstanz.de/sites/default/files/Zaehlstelle_Herose_2020_stuendlich_Wetter.csv
+  - https://offenedaten-konstanz.de/sites/default/files/Zaehlstelle_Herose_2021_stuendlich_Wetter.csv
+* Handy visualisation URL: https://www.bicycle-data.de/city-analysis/
 * Data Type: CSV
+
+<details>
+  <summary> Data Details </summary>
+
+  
+<p>Der Datensatz enthält die Messergebnisse der Fahrradzählungen aller städtischen Dauerzählstellen im Konstanzer Stadtgebiet. Mit diesen Daten kann genau festgestellt werden, wann wie viele Radfahrerinnen und Radfahrer an diesen Orten unterwegs gewesen sind. Die Messergebnisse sind im stündlichen Rhythmus erfasst. Da dieser Datensatz  die damaligen Wetterdaten enthält, können spannende Zusammenhänge zwischen Wetter und Fahrradnutzung aufgedeckt werden.</p>
+<p>Die Daten der Fahrradzählstelle im Herosépark werden von der französischen Herstellerfirma Eco Counter erhoben. Die Wetterdaten stammen von <a href="http://www.worldweatheronline.com" target="_blank">www.worldweatheronline.com</a> </p>
+<p>Der Spaltenaufbau dieser Ressource bestimmt sich nach dem folgenden Schema:</p>
+<ul>
+<li>Zeit: Datum (DD.MM.JJJJ)</li>
+<li>Uhrzeit (HH:MM)</li>
+<li>Fahrradbruecke: Anzahl RadverkehrsteilnehmerInnen gesamt (Zahl)</li>
+<li>Fahrradbruecke stadteinwaerts: Anzahl RadverkehrsteilnehmerInnen stadteinwärts (Zahl) (linksrheinisches Gebiet)</li>
+<li>Fahrradbruecke stadtauswaerts: Anzahl RadverkehrsteilnehmerInnen stadtauswärts (Zahl)</li>
+<li>Symbol Wetter: Kategorisierung Wetter in Sonnig, Leicht bewölkt, Bewölkt, Bedeckt, Leichter Nebel, Stellenweiser Nieselregen, Nieselregen, Stellenweiser leichter Regenfall, Leichter Regenschauer, Stellenweiser Regenfall, Stellenweise Gewitter und Niederschläge, Mäßiger Regenfall, Teilweise mäßiger Regenfall, Mäßiger bis starker Regenschauer</li>
+<li>Temperatur: Gemessene Temperatur zum gemessenen Zeitpunkt in Grad Celsius </li>
+<li>Gefühlte Temperatur: Wahrgenommene Umgebungstemperatur, die sich aufgrund verschiedener Faktoren von der gemessenen Lufttemperatur unterscheiden kann. Es handelt sich um ein bioklimatisches Maß für das thermische Wohlbefinden. Die nach dem Hitzindex gemessene gefühlte Temperatur zum gemessenen Zeitpunkt in Grad Celsius   </li>
+<li>Regen (mm): Niederschlag zum Zeitpunkt in Millimeter </li>
+</ul>
+</details>
+
+<details>
+<summary>The Swiss cantonal authority of Thurgau and the Swiss Federal Roads Office (ASTRA) collect the average daily traffic volume (DTV) of motor vehicles crossing the border at the three customs posts "Tägerwilen-Paradieser Tor", "Emmishofer Zoll" and the "Gemeinschaftszollanlage Kreuzlingen/Tägerwilen (GZA for short)".
+</summary>
+  
+#### Further information
+Since 2013, this data has been collected and is now also made available as open data. These data are also available in the [Open Data Portal of the Canton of Thurgau](https://map.geo.tg.ch/apps/mf-geoadmin3/?lang=de&topic=ech&catalogNodes=10000,20000,30000,15100,34000&layers=richtplankt50k_hauptverkehrstrassen,richtplankt200k_motorfahrzeugverkehr,strassenverkehrszaehlung_messdaten&layers_opacity=0.9,1,1&E=2728994.19&N=1280640.14&zoom=6&layers_timestamp=,,20130101&layers_visibility=true).
+
+Note: The city of Constance explicitly did not collect the data.
+
+#### Data source:
+
+[Open Data Constance](https://offenedaten-konstanz.de/dataset/grenz-berg-nge-kraftfahrzeuge-deutschland-schweiz) under CC-BY 4.0
+
+</details>
 
 <details>
   <summary>
