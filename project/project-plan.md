@@ -129,7 +129,8 @@ The Bicycle-Data-Initiative has an interactive tool which offers the following f
 
 <!-- List of work packages ordered sequentially, each pointing to an issue with more details. -->
 
-1. Example Issue [#1][i1]
-2. ...
+In order to fully utilize the automated Linking that GitHub provides the coarse-grained list of work packages is proveded in the first issue of this Project and will constantly be updated there.
 
-[i1]: https://github.com/jvalue/2023-amse-template/issues/1
+## [Work Packages → #1][Work Packages]
+
+[Work Packages]: https://github.com/Waldleufer/2023-amse-data-engineering/issues/1
