@@ -18,7 +18,7 @@ urls_source2 = {
     'https://offenedaten-konstanz.de/sites/default/files/Zaehlstelle_Herose_2021_stuendlich_Wetter.csv': ',',
 }
 
-dfs_source2 = [pd.read_csv(url, sep=sep, encoding='ISO-8859-1') for url, sep in urls_source2.items()]
+dfs_source2 = [pd.read_csv(url, sep=sep) for url, sep in urls_source2.items()]
 
 # Step 2: Massage the data
 
@@ -35,9 +35,16 @@ df_source_TPZ['End DateTime'] = pd.to_datetime(df_source_TPZ['Datum'] + ' ' + df
 df_source_EmZ['End DateTime'] = pd.to_datetime(df_source_EmZ['Datum'] + ' ' + df_source_EmZ['End Time'], format='%d.%m.%Y %H:%M')
 
 
+def convert_to_datetime(date_str):
+    if "-" in date_str:
+        return pd.to_datetime(date_str, format='%Y-%m-%d %H:%M:%S')
+    else:
+        return pd.to_datetime(date_str, format='%d.%m.%Y %H:%M')
+
+
 # Convert the 'Zeit' column to datetime
 for df in dfs_source2:
-    df['Zeit'] = pd.to_datetime(df['Zeit'])
+    df['Zeit'] = df['Zeit'].apply(convert_to_datetime)
 
 # combine all dataframes from source 2
 df_source2_all = pd.concat(dfs_source2)
