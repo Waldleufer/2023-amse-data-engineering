@@ -9,21 +9,21 @@ csv_source_url = 'https://opendata.rhein-kreis-neuss.de/api/v2/catalog/datasets/
 db_path = Path('airports.sqlite')
 
 # Meaningful column names
-column_mapping = {
-    'column_1': 'ID',
-    'column_2': 'Airport_Name',
-    'column_3': 'City',
-    'column_4': 'Country',
-    'column_5': 'IATA',
-    'column_6': 'ICAO',
-    'column_7': 'Latitude',
-    'column_8': 'Longitude',
-    'column_9': 'Altitude',
-    'column_10': 'Timezone',
-    'column_11': 'DST',
-    'column_12': 'Tz_database_time_zone',
-    'geo_punkt': 'Geo_Point'
-}
+# column_mapping = {
+#     'column_1': 'ID',
+#     'column_2': 'Airport_Name',
+#     'column_3': 'City',
+#     'column_4': 'Country',
+#     'column_5': 'IATA',
+#     'column_6': 'ICAO',
+#     'column_7': 'Latitude',
+#     'column_8': 'Longitude',
+#     'column_9': 'Altitude',
+#     'column_10': 'Timezone',
+#     'column_11': 'DST',
+#     'column_12': 'Tz_database_time_zone',
+#     'geo_punkt': 'Geo_Point'
+# }
 
 
 def read_data(csv_source_url, db_path):
@@ -61,7 +61,7 @@ def store_data(data):
     No error occurred, proceed to rename and store data
     Beware: Renaming happens in place!
     """
-    data.rename(columns=column_mapping, inplace=True)
+    #data.rename(columns=column_mapping, inplace=True)
     engine = create_engine(f'sqlite:///{db_path}')
     data.to_sql('airports', engine, if_exists='replace', index=False)
 
