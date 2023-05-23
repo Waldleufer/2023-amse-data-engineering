@@ -12,7 +12,6 @@ df_source_TPZ = pd.read_csv(url_source_TPZ, sep=";", encoding='ISO-8859-1')
 df_source_EmZ = pd.read_csv(url_source_EmZ, sep=";", encoding='ISO-8859-1')
 
 # Source 2
-# Source 2
 urls_source2 = {
     'https://offenedaten-konstanz.de/sites/default/files/Zaehlstelle_Herose_2020_stuendlich_Wetter.csv': ';',
     'https://offenedaten-konstanz.de/sites/default/files/Zaehlstelle_Herose_2021_stuendlich_Wetter.csv': ',',
