@@ -1,4 +1,6 @@
 /data/*.db
+/data/__pycache__
+/data/.pytest_cache
 
 .idea
 /exercises/*.sqlite

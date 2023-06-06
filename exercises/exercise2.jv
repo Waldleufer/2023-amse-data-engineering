@@ -1,0 +1,92 @@
+pipeline TrainstopsPipeline {
+
+    // Pipeline declaration
+
+    TrainstopsExtractor
+        -> TrainstopTextFileInterpreter
+        -> TrainstopCSVInterpreter
+        -> StatusColumnDropper
+        -> TrainstopsTableInterpreter
+        -> TrainstopsStorer;
+
+
+    // ValueTypes
+
+    valuetype IdentificationOfFixedObjectsInPublicTransport oftype text {
+        constraints: [
+            IFOPT_Format,
+        ];
+    }
+
+    valuetype LaengeBreiteType oftype decimal {
+	    constraints: [
+		    GeographicCoordinate
+	    ];
+    }
+
+    valuetype VerkehrType oftype text {
+        constraints: [
+            VerkehrAllowlist,
+        ];
+    }
+    
+
+    // Constraints
+
+    constraint IFOPT_Format oftype RegexConstraint {
+        regex: /^[a-z]{2}:\d+:\d+(:\d+)?(:\d+)?$/;
+    }
+
+    constraint GeographicCoordinate oftype RangeConstraint {
+        lowerBound: -90;
+        lowerBoundInclusive: true;
+        upperBound: 90;     
+        upperBoundInclusive: true; 
+    }
+
+
+    constraint VerkehrAllowlist oftype AllowlistConstraint {
+        allowlist: [
+            "FV", "RV", "nur DPN",
+        ];
+    }
+
+    // Jayvee automatically invalidates rows that contain empty cells. Thats handy, could think of scenarios where that is undesirable though.
+
+    // Blocks
+
+	block TrainstopsExtractor oftype HttpExtractor {
+		url: "https://download-data.deutschebahn.com/static/datasets/haltestellen/D_Bahnhof_2020_alle.CSV";
+	}
+
+	block TrainstopTextFileInterpreter oftype TextFileInterpreter {}
+
+	block TrainstopCSVInterpreter oftype CSVInterpreter {
+        delimiter: ';';
+        enclosing: '"';
+	}
+
+	block StatusColumnDropper oftype ColumnDeleter {
+        delete: [column J];
+	}
+
+	block TrainstopsTableInterpreter oftype TableInterpreter {
+		header: true;
+        columns : [
+            "EVA_NR" oftype integer,
+            "DS100" oftype text,
+            "IFOPT" oftype IdentificationOfFixedObjectsInPublicTransport,
+            "NAME" oftype text,
+            "Verkehr" oftype VerkehrType,
+            "Laenge" oftype LaengeBreiteType,
+            "Breite" oftype LaengeBreiteType,
+            "Betreiber_Name" oftype text,
+            "Betreiber_Nr" oftype integer,
+        ];
+	}
+
+	block TrainstopsStorer oftype SQLiteLoader {
+		table: "trainstops";
+		file: "./trainstops.sqlite";
+	}
+}
