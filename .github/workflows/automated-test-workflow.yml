@@ -4,9 +4,9 @@ on:
   push:
     branches:
     - main
-    paths:
-    - project/**
-    - data/**
+    # paths:
+    # - project/**
+    # - data/**
 
 jobs:
   project-tests:
