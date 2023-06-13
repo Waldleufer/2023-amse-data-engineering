@@ -32,4 +32,6 @@ jobs:
     # Run project tests
     - name: Run tests
       run: |
+        pwd
+        chmod +x ./project/tests.sh
         ./project/tests.sh
