@@ -47,9 +47,6 @@ df = df[['date', 'CIN', 'name', 'petrol', 'diesel', 'gas', 'electro', 'hybrid', 
 
 print(df.head(10))
 # Step 3: Assign fitting datatypes:
-# Convert 'date' to datetime
-df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y') # assuming the date format is DD.MM.YYYY
-
 # Convert 'CIN' to string
 df['CIN'] = df['CIN'].astype(str)
 
