@@ -16,7 +16,7 @@ def read_csv_with_retries(url, max_retries=5):
     """
     The encoding is set to 'iso-8859-1' to preserve German special characters
     Skip the first 6 and last 4 rows since they contain metadata
-    Perform exponential back-off if unsuccessful for 4 additional times after the initial call
+    Perform exponential back-off if unsuccessful for max_retries-1 additional times after the initial call
     """
     for attempt in range(max_retries):
         try:
