@@ -11,7 +11,7 @@ max_retries = 5
 for attempt in range(max_retries):
     try:
         df = pd.read_csv('https://www-genesis.destatis.de/genesis/downloads/00/tables/46251-0021_00.csv',
-                         sep=";", skiprows=6, skipfooter=4, encoding='iso-8859-1', engine='python',
+                         sep=";", skiprows=6, skipfooter=4, encoding='UTF-8', engine='python',
                          dtype={'Unnamed: 1': str}) # Convert the type of the second column to string
         break
     except Exception as e:
