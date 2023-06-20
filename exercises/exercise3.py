@@ -47,11 +47,11 @@ df = df[['date', 'CIN', 'name', 'petrol', 'diesel', 'gas', 'electro', 'hybrid', 
 
 print(df.head(10))
 # Step 3: Assign fitting datatypes:
-# Convert 'CIN' to string
+# First 3 columns contain strings:
+df['date'] = df['date'].astype(str)
 df['CIN'] = df['CIN'].astype(str)
-
-# 'name' is likely already a string, but this will ensure it
 df['name'] = df['name'].astype(str)
+
 
 # Convert the rest to integer
 for column in ['petrol', 'diesel', 'gas', 'electro', 'hybrid', 'plugInHybrid', 'others']:
@@ -59,6 +59,7 @@ for column in ['petrol', 'diesel', 'gas', 'electro', 'hybrid', 'plugInHybrid', '
     df[column] = df[column].fillna(0).astype(int)  # replace NaNs with 0, then convert to integer
 
 print(df.head(10))
+print(df.dtypes)
 
 # Step 4: Data Validation
 
