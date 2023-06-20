@@ -45,7 +45,23 @@ df.columns = columns
 # Keep only required columns
 df = df[['date', 'CIN', 'name', 'petrol', 'diesel', 'gas', 'electro', 'hybrid', 'plugInHybrid', 'others']]
 
-# Step 3: Data Validation
+# Step 3: Assign fitting datatypes:
+# Convert 'date' to datetime
+df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y') # assuming the date format is DD.MM.YYYY
+
+# Convert 'CIN' to string
+df['CIN'] = df['CIN'].astype(str)
+
+# 'name' is likely already a string, but this will ensure it
+df['name'] = df['name'].astype(str)
+
+# Convert the rest to integer
+for column in ['petrol', 'diesel', 'gas', 'electro', 'hybrid', 'plugInHybrid', 'others']:
+    df[column] = pd.to_numeric(df[column], errors='coerce')  # convert values to numeric, replace non-numeric values with NaN
+    df[column] = df[column].fillna(0).astype(int)  # replace NaNs with 0, then convert to integer
+
+
+# Step 4: Data Validation
 # "-" should be replaced with NaN.
 df = df.replace('-', np.nan)
 
@@ -54,9 +70,8 @@ df = df[df['CIN'].apply(lambda x: isinstance(x, str) and len(x) == 5)]
 
 # All other columns should be positive integers > 0
 for column in ['petrol', 'diesel', 'gas', 'electro', 'hybrid', 'plugInHybrid', 'others']:
-    df[column] = pd.to_numeric(df[column], errors='coerce')  # convert values to numeric, replace non-numeric values with NaN
     df = df[df[column].apply(lambda x: np.isnan(x) or x > 0)]
 
-# Step 4: Write to SQLite Database
+# Step 5: Write to SQLite Database
 engine = create_engine('sqlite:///cars.sqlite')
 df.to_sql('cars', engine, if_exists='replace', index=False)
