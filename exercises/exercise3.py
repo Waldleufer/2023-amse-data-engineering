@@ -11,7 +11,7 @@ max_retries = 5
 for attempt in range(max_retries):
     try:
         df = pd.read_csv('https://www-genesis.destatis.de/genesis/downloads/00/tables/46251-0021_00.csv',
-                         sep=";", skiprows=6, skipfooter=4, encoding='UTF-8', engine='python',
+                         sep=";", skiprows=6, skipfooter=4, encoding='iso-8859-1', engine='python',
                          dtype={'Unnamed: 1': str}) # Convert the type of the second column to string
         break
     except Exception as e:
@@ -32,10 +32,10 @@ indices_to_rename = {
     12: 'petrol',
     22: 'diesel',
     32: 'gas',
-    41: 'electro',
+    42: 'electro',
     52: 'hybrid',
-    61: 'plugInHybrid',
-    68: 'others'
+    62: 'plugInHybrid',
+    73: 'others'
 }
 for index, new_name in indices_to_rename.items():
     if index < len(columns):
@@ -45,6 +45,7 @@ df.columns = columns
 # Keep only required columns
 df = df[['date', 'CIN', 'name', 'petrol', 'diesel', 'gas', 'electro', 'hybrid', 'plugInHybrid', 'others']]
 
+print(df.head(10))
 # Step 3: Assign fitting datatypes:
 # Convert 'date' to datetime
 df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y') # assuming the date format is DD.MM.YYYY
@@ -57,20 +58,22 @@ df['name'] = df['name'].astype(str)
 
 # Convert the rest to integer
 for column in ['petrol', 'diesel', 'gas', 'electro', 'hybrid', 'plugInHybrid', 'others']:
-    df[column] = pd.to_numeric(df[column], errors='coerce')  # convert values to numeric, replace non-numeric values with NaN
+    df[column] = pd.to_numeric(df[column], errors='coerce')  # convert values to numeric, replace non-numeric values with NaN (i.e. "-")
     df[column] = df[column].fillna(0).astype(int)  # replace NaNs with 0, then convert to integer
 
+print(df.head(10))
 
 # Step 4: Data Validation
-# "-" should be replaced with NaN.
-df = df.replace('-', np.nan)
 
 # CINs must be strings with 5 characters
 df = df[df['CIN'].apply(lambda x: isinstance(x, str) and len(x) == 5)]
 
+
 # All other columns should be positive integers > 0
 for column in ['petrol', 'diesel', 'gas', 'electro', 'hybrid', 'plugInHybrid', 'others']:
-    df = df[df[column].apply(lambda x: np.isnan(x) or x > 0)]
+    df = df[df[column].apply(lambda x: x > 0)]
+
+print(df.head(10))
 
 # Step 5: Write to SQLite Database
 engine = create_engine('sqlite:///cars.sqlite')
