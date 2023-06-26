@@ -31,10 +31,6 @@ def execute_pipeline():
     df_source_TPZ['Start DateTime'] = pd.to_datetime(df_source_TPZ['Datum'] + ' ' + df_source_TPZ['Start Time'], format='%d.%m.%Y %H:%M')
     df_source_EmZ['Start DateTime'] = pd.to_datetime(df_source_EmZ['Datum'] + ' ' + df_source_EmZ['Start Time'], format='%d.%m.%Y %H:%M')
 
-    # Convert 'Datum' and 'End Time' to datetime
-    df_source_TPZ['End DateTime'] = pd.to_datetime(df_source_TPZ['Datum'] + ' ' + df_source_TPZ['End Time'], format='%d.%m.%Y %H:%M')
-    df_source_EmZ['End DateTime'] = pd.to_datetime(df_source_EmZ['Datum'] + ' ' + df_source_EmZ['End Time'], format='%d.%m.%Y %H:%M')
-
     def convert_to_datetime(date_str):
         if "-" in date_str:
             return pd.to_datetime(date_str, format='%Y-%m-%d %H:%M:%S')
@@ -48,11 +44,22 @@ def execute_pipeline():
     # combine all dataframes from source 2
     df_source2_all = pd.concat(dfs_source2)
 
+    # Only keep Start DateTime and EMZCH and EMZD columns
+    df_source_EmZ = df_source_EmZ[['Start DateTime', 'EmZCH', 'EmZD']]
+    df_source_TPZ = df_source_TPZ[['Start DateTime', 'TPZCH', 'TPZD']]
+    df_source2_all = df_source2_all[['Zeit', 'FahrradbrueckeFahrradbruecke', 'Symbol Wetter', 'Temperatur (°C)', 'Regen (mm)']]
+
+    # Drop any rows where Start DateTime or Zeit is NULL
+    
+    df_source_EmZ = df_source_EmZ.dropna(subset = ["Start DateTime"])
+    df_source_TPZ = df_source_TPZ.dropna(subset = ["Start DateTime"])
+    df_source2_all = df_source2_all.dropna(subset = ["Zeit"])
+
     # Step 3: Store the data
 
     # Create SQLite engine
-    connectedDB = sqlite3.connect('preprocessed-data.db')
-    engine = create_engine('sqlite:///preprocessed-data.db')
+    connectedDB = sqlite3.connect('preprocessed-data.sqlite')
+    engine = create_engine('sqlite:///preprocessed-data.sqlite')
 
     # Store the data in SQLite
     df_source_TPZ.to_sql('TPZ_data', connectedDB, if_exists='replace', index=False)
