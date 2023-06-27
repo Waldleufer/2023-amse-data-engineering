@@ -81,10 +81,8 @@ def massage_data(df_source_TPZ, df_source_EmZ, dfs_source2):
     df_source_bikes.rename(columns={'FahrradbrueckeFahrradbruecke': 'Fahrradbruecke total', 'Zeit': 'Start DateTime'}, inplace=True)
 
     # Merge datasets using inner join on 'Start DateTime'
+    # The inner join only keeps rows that can be filled with data from all three sources.
     merged_df = df_source_TPZ.merge(df_source_EmZ, on='Start DateTime', how='inner').merge(df_source_bikes, on='Start DateTime', how='inner')
-
-    # Drop rows with any missing values
-    merged_df.dropna(inplace=True)
 
     return df_source_TPZ, df_source_EmZ, df_source_bikes, merged_df
 
