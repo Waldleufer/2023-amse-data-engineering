@@ -105,7 +105,7 @@ def store_data(df_source_TPZ, df_source_EmZ, df_source_bikes, merged_df):
 def remove_faulty_periods(df, bike_column):
     """
     This function removes faulty time periods from the dataframe 'df'
-    based on the conditions defined in the function.
+    A time period is faulty if all columns ar nan, or there is a steep drop or there are at least 3 consecutive zeros.
     """
 
     # Defining the steep drop
