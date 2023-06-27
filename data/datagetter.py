@@ -6,7 +6,18 @@ import numpy as np
 
 def execute_pipeline():
     # Step 1: Pull the data
+    df_source_TPZ, df_source_EmZ, df_source_bikes = pull_data()
 
+    # Step 2: Massage the data
+    df_source_TPZ, df_source_EmZ, df_source_bikes, merged_df = massage_data(df_source_TPZ, df_source_EmZ, df_source_bikes)
+
+    # Step 3: Store the data
+    store_data(df_source_TPZ, df_source_EmZ, df_source_bikes, merged_df)
+
+    print("Pipeline executed sucessfully")
+    
+
+def pull_data():
     # Source 1
     url_source_TPZ = 'https://offenedaten-konstanz.de/sites/default/files/TPZ_Grenzverkehr_Juli%202020-M%C3%A4rz%202022.csv'
     url_source_EmZ = 'https://offenedaten-konstanz.de/sites/default/files/EmZ_Grenzverkehr_Juli%202020-M%C3%A4rz%202022.csv'
@@ -22,8 +33,10 @@ def execute_pipeline():
 
     dfs_source2 = [pd.read_csv(url, sep=sep) for url, sep in urls_source2.items()]
 
-    # Step 2: Massage the data
+    return df_source_TPZ, df_source_EmZ, dfs_source2
 
+
+def massage_data(df_source_TPZ, df_source_EmZ, dfs_source2):
     # Split 'Zeit' column into 'Start Time' and 'End Time'
     df_source_TPZ[['Start Time', 'End Time']] = df_source_TPZ['Zeit'].str.split(' - ', expand=True)
     df_source_EmZ[['Start Time', 'End Time']] = df_source_EmZ['Zeit'].str.split(' - ', expand=True)
@@ -42,26 +55,22 @@ def execute_pipeline():
     for df in dfs_source2:
         df['Zeit'] = df['Zeit'].apply(convert_to_datetime)
 
-    # combine all dataframes from source 2
+    # Combine all dataframes from source 2
     df_source_bikes = pd.concat(dfs_source2)
 
-    # Only keep Start DateTime and EMZCH and EMZD columns
+    # Only keep Start DateTime and relevant columns
     df_source_EmZ = df_source_EmZ[['Start DateTime', 'EmZCH', 'EmZD']]
     df_source_TPZ = df_source_TPZ[['Start DateTime', 'TPZCH', 'TPZD']]
     df_source_bikes = df_source_bikes[['Zeit', 'FahrradbrueckeFahrradbruecke', 'Symbol Wetter', 'Temperatur (°C)', 'Regen (mm)']]
     
-    # handle lines with null values
-
-
+    # Handle lines with null values
     df_source_EmZ = df_source_EmZ.dropna()
     df_source_TPZ = df_source_TPZ.dropna()
-        # Drop any rows where Zeit is nan, fill nan values in df_source_bikes with 0, use custom algorithm to handle faulty periods.
     df_source_bikes = df_source_bikes.dropna(subset=["Zeit"])
     df_source_bikes['FahrradbrueckeFahrradbruecke'] = df_source_bikes['FahrradbrueckeFahrradbruecke'].fillna(0)
     df_source_bikes = remove_faulty_periods(df_source_bikes, ['FahrradbrueckeFahrradbruecke'])
 
-    # use practical types
-
+    # Use practical types
     df_source_EmZ['EmZCH'] = df_source_EmZ['EmZCH'].astype(int)
     df_source_EmZ['EmZD'] = df_source_EmZ['EmZD'].astype(int)
     df_source_TPZ['TPZCH'] = df_source_TPZ['TPZCH'].astype(int)
@@ -70,17 +79,19 @@ def execute_pipeline():
 
     # Rename weird column names and Unify names
     df_source_bikes.rename(columns={'FahrradbrueckeFahrradbruecke': 'Fahrradbruecke total', 'Zeit': 'Start DateTime'}, inplace=True)
-     # Merge datasets using inner join on 'Start DateTime'
+
+    # Merge datasets using inner join on 'Start DateTime'
     merged_df = df_source_TPZ.merge(df_source_EmZ, on='Start DateTime', how='inner').merge(df_source_bikes, on='Start DateTime', how='inner')
+
     # Drop rows with any missing values
     merged_df.dropna(inplace=True)
 
+    return df_source_TPZ, df_source_EmZ, df_source_bikes, merged_df
 
-    # Step 3: Store the data
 
+def store_data(df_source_TPZ, df_source_EmZ, df_source_bikes, merged_df):
     # Create SQLite engine
     connectedDB = sqlite3.connect('preprocessed-data.sqlite')
-    engine = create_engine('sqlite:///preprocessed-data.sqlite')
 
     # Store the data in SQLite
     df_source_TPZ.to_sql('TPZ_data', connectedDB, if_exists='replace', index=False)
@@ -90,9 +101,7 @@ def execute_pipeline():
 
     connectedDB.close()
 
-    print("Pipeline executed")
-    
-    
+
 def remove_faulty_periods(df, bike_column):
     """
     This function removes faulty time periods from the dataframe 'df'
@@ -134,7 +143,6 @@ def remove_faulty_periods(df, bike_column):
     df = df.drop(columns='faulty')
 
     return df
-
 
 
 if __name__ == '__main__':
