@@ -22,10 +22,10 @@ def test_execute_pipeline():
     tables = cursor.fetchall()
     conn.close()
 
-    # Check if the tuples ('TPZ_data',), ('EmZ_data',) and ('source2_data',) exist in the tables list
+    # Check if the tuples ('TPZ_data',), ('EmZ_data',) and ('bikes_data',) exist in the tables list
     assert ('TPZ_data',) in tables, "TPZ_data table was not created in the database"
     assert ('EmZ_data',) in tables, "EmZ_data table was not created in the database"
-    assert ('source2_data',) in tables, "source2_data table was not created in the database"
+    assert ('bikes_data',) in tables, "bikes_data table was not created in the database"
 
     print("Test execution completed without any errors.")
 
