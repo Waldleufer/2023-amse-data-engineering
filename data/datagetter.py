@@ -68,9 +68,12 @@ def execute_pipeline():
     df_source_TPZ['TPZD'] = df_source_TPZ['TPZD'].astype(int)
     df_source_bikes['FahrradbrueckeFahrradbruecke'] = df_source_bikes['FahrradbrueckeFahrradbruecke'].astype(int)
 
-    # Rename weird column names
-    df_source_bikes = df_source_bikes.rename(columns={'FahrradbrueckeFahrradbruecke': 'Fahrradbruecke total'})
-
+    # Rename weird column names and Unify names
+    df_source_bikes.rename(columns={'FahrradbrueckeFahrradbruecke': 'Fahrradbruecke total', 'Zeit': 'Start DateTime'}, inplace=True)
+     # Merge datasets using inner join on 'Start DateTime'
+    merged_df = df_source_TPZ.merge(df_source_EmZ, on='Start DateTime', how='inner').merge(df_source_bikes, on='Start DateTime', how='inner')
+    # Drop rows with any missing values
+    merged_df.dropna(inplace=True)
 
 
     # Step 3: Store the data
@@ -83,6 +86,7 @@ def execute_pipeline():
     df_source_TPZ.to_sql('TPZ_data', connectedDB, if_exists='replace', index=False)
     df_source_EmZ.to_sql('EmZ_data', connectedDB, if_exists='replace', index=False)
     df_source_bikes.to_sql('bikes_data', connectedDB, if_exists='replace', index=False)
+    merged_df.to_sql('merged_data', connectedDB, if_exists='replace', index=False)
 
     connectedDB.close()
 
