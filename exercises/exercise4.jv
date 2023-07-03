@@ -92,10 +92,10 @@ pipeline BatteryDataPipeline {
             "Geraet" oftype integer,
             "Hersteller" oftype text,
             "Model" oftype text,
-            "Monat" oftype Month,
+            "Monat" oftype integer,
             "Temperatur" oftype decimal,
             "Batterietemperatur" oftype decimal,
-            "Geraet aktiv" oftype GermanBoolean,
+            "Geraet aktiv" oftype text,
         ];
 	}
 
