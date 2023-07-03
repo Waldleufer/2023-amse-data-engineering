@@ -18,41 +18,31 @@ pipeline BatteryDataPipeline {
 
     // ValueTypes
 
-    valuetype IdentificationOfFixedObjectsInPublicTransport oftype text {
-        constraints: [
-            IFOPT_Format,
-        ];
-    }
-
-    valuetype LaengeBreiteType oftype decimal {
+    valuetype Month oftype decimal {
 	    constraints: [
-		    GeographicCoordinate
+		    MonthConstraint
 	    ];
     }
 
-    valuetype VerkehrType oftype text {
+    valuetype GermanBoolean oftype text {
         constraints: [
-            VerkehrAllowlist,
+            GeraetAktivAllowList,
         ];
     }
     
 
     // Constraints and Transforms
 
-    constraint IFOPT_Format oftype RegexConstraint {
-        regex: /^[a-z]{2}:\d+:\d+(:\d+)?(:\d+)?$/;
-    }
-
-    constraint GeographicCoordinate oftype RangeConstraint {
-        lowerBound: -90;
+    constraint MonthConstraint oftype RangeConstraint {
+        lowerBound: 1;
         lowerBoundInclusive: true;
-        upperBound: 90;     
+        upperBound: 12;     
         upperBoundInclusive: true; 
     }
 
-    constraint VerkehrAllowlist oftype AllowlistConstraint {
+    constraint GeraetAktivAllowList oftype AllowlistConstraint {
         allowlist: [
-            "FV", "RV", "nur DPN",
+            "Ja", "Nein"
         ];
     }
 
@@ -63,7 +53,6 @@ pipeline BatteryDataPipeline {
         tempFahrenheit: ((tempCelsius * 9/5) + 32);
     }
 
-    // Jayvee automatically invalidates rows that contain empty cells. Thats handy, could think of scenarios where that is undesirable though.
 
     // Blocks
 
@@ -103,10 +92,10 @@ pipeline BatteryDataPipeline {
             "Geraet" oftype integer,
             "Hersteller" oftype text,
             "Model" oftype text,
-            "Monat" oftype integer,
+            "Monat" oftype Month,
             "Temperatur" oftype decimal,
             "Batterietemperatur" oftype decimal,
-            "Geraet aktiv" oftype text,
+            "Geraet aktiv" oftype GermanBoolean,
         ];
 	}
 
