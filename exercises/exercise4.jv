@@ -11,6 +11,8 @@ pipeline BatteryDataPipeline {
         -> ExactColumnDropper
         -> HeaderRowDeleter
         -> BatteryDataTableInterpreter
+        -> CelsiusToFahrenheitBatterytemperatureTransformer
+        -> CelsiusToFahrenheitTemperatureTransformer
         -> BatteryDataStorer;
 
 
@@ -35,7 +37,7 @@ pipeline BatteryDataPipeline {
     }
     
 
-    // Constraints
+    // Constraints and Transforms
 
     constraint IFOPT_Format oftype RegexConstraint {
         regex: /^[a-z]{2}:\d+:\d+(:\d+)?(:\d+)?$/;
@@ -48,11 +50,17 @@ pipeline BatteryDataPipeline {
         upperBoundInclusive: true; 
     }
 
-
     constraint VerkehrAllowlist oftype AllowlistConstraint {
         allowlist: [
             "FV", "RV", "nur DPN",
         ];
+    }
+
+    transform CelsiusToFahrenheit {
+        from tempCelsius oftype decimal;
+        to tempFahrenheit oftype decimal;
+
+        tempFahrenheit: ((tempCelsius * 9/5) + 32);
     }
 
     // Jayvee automatically invalidates rows that contain empty cells. Thats handy, could think of scenarios where that is undesirable though.
@@ -101,6 +109,18 @@ pipeline BatteryDataPipeline {
             "Geraet aktiv" oftype text,
         ];
 	}
+
+    block CelsiusToFahrenheitBatterytemperatureTransformer oftype TableTransformer  {
+        inputColumn : 'Batterietemperatur';
+        outputColumn: 'Batterietemperatur';
+        use: CelsiusToFahrenheit;
+    }
+
+    block CelsiusToFahrenheitTemperatureTransformer oftype TableTransformer  {
+        inputColumn : 'Temperatur';
+        outputColumn: 'Temperatur';
+        use: CelsiusToFahrenheit;
+    }
 
 	block BatteryDataStorer oftype SQLiteLoader {
 		table: "temperatures";
