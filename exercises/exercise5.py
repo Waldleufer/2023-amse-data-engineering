@@ -20,9 +20,9 @@ def main():
 
     download_file_exponential_backoff(gtfs_url, gtfs_zipfile_name)
     extract_file(gtfs_zipfile_name, stops_filename)
-    df_stops = load_and_filter_data(stops_filename, stops_columns, zone_id_column, target_zone_id)
-    df_stops_validated = validate_data(df_stops, coordinate_columns)
-    write_to_sqlite(df_stops_validated, sqlite_db_name, sqlite_table_name)
+    df = load_and_filter_data(stops_filename, stops_columns, zone_id_column, target_zone_id)
+    df = validate_data(df, coordinate_columns)
+    write_to_sqlite(df, sqlite_db_name, sqlite_table_name)
 
     # Cleanup: Remove downloaded zip file and extracted text file
     if os.path.exists(gtfs_zipfile_name):
@@ -52,7 +52,7 @@ def extract_file(zipfile_name, file_to_extract):
 
 
 def load_and_filter_data(filename, columns, filter_column, filter_value):
-    df = pd.read_csv(filename, sep=',', encoding='iso-8859-1', usecols=columns)
+    df = pd.read_csv(filename, sep=',', usecols=columns)
     df = df[df[filter_column] == filter_value]
     return df
 
